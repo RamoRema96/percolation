@@ -113,7 +113,7 @@ target/
 
 # Mypy cache
 .mypy_cache/
-
+image
 
 *.png
 
