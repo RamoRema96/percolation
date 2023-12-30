@@ -1,5 +1,11 @@
 import numpy as np
+from enum import Enum
 
+class CellState(Enum):
+    EMPTY = 0
+    UNIGNITED = 1
+    BURNING = 2
+    BURNED = 3
 
 class FireSimulation:
     """
@@ -14,7 +20,7 @@ class FireSimulation:
         self.N = N
         self.p = p
         self.grid = self.create_lattice()
-        self.to_fire = set()
+        self.to_fire = []
 
     def create_lattice(self):
         """
@@ -24,35 +30,35 @@ class FireSimulation:
         - numpy.ndarray: A 2D array representing the initial state of the lattice.
         """
 
-        m = np.zeros((self.N, self.N))
-        m[np.random.rand(self.N, self.N) < self.p] = 1
+        m = np.zeros((self.N, self.N), dtype=int)
+        m[np.random.rand(self.N, self.N) < self.p] = CellState.UNIGNITED.value
         return m
 
     def begin_fire(self):
         for column in range(self.N):
-            if self.grid[0][column] == 1:
-                self.grid[0][column] = 2
+            if self.grid[0][column] == CellState.UNIGNITED.value:
+                self.grid[0][column] = CellState.BURNING.value
 
     def spread_fire(self):
         """
         Propagates the fire to neighboring cells based on predefined rules.
         """
-        self.to_fire.clear()  # Clear the set before populating it again
+        self.to_fire.clear()  # Clear the list before populating it again
         for column in range(self.N):
             for row in range(self.N):
-                if self.grid[row][column] == 2:
-                    if (column < self.N - 1) and self.grid[row][column + 1] == 1:
-                        self.grid[row][column + 1] = 2
-                    if (row < self.N - 1) and self.grid[row + 1][column] == 1:
-                        self.grid[row + 1][column] = 2
-                    if (row > 0) and self.grid[row - 1][column] == 1:
-                        self.to_fire.add((row - 1, column))
-                    if (column > 0) and self.grid[row][column - 1] == 1:
-                        self.to_fire.add((row, column - 1))
+                if self.grid[row][column] == CellState.BURNING.value:
+                    if (column < self.N - 1) and self.grid[row][column + 1] == CellState.UNIGNITED.value:
+                        self.grid[row][column + 1] = CellState.BURNING.value
+                    if (row < self.N - 1) and self.grid[row + 1][column] == CellState.UNIGNITED.value:
+                        self.grid[row + 1][column] = CellState.BURNING.value
+                    if (row > 0) and self.grid[row - 1][column] == CellState.UNIGNITED.value:
+                        self.to_fire.append((row - 1, column))
+                    if (column > 0) and self.grid[row][column - 1] == CellState.UNIGNITED.value:
+                        self.to_fire.append((row, column - 1))
 
     def spread_fire_next_time(self):
         for element in self.to_fire:
-            self.grid[element[0]][element[1]] = 2
+            self.grid[element[0]][element[1]] = CellState.BURNING.value
 
     def simulate_fire_spread(self, steps):
         """
@@ -65,16 +71,12 @@ class FireSimulation:
         self.begin_fire()
         for _ in range(steps):
             self.spread_fire()
-            self.grid_this_time = np.copy(self.grid)
             grid_configs.append(np.copy(self.grid))
-            self.grid[self.grid == 2] = 3
+            self.grid[self.grid == CellState.BURNING.value] = CellState.BURNED.value
             self.spread_fire_next_time()
         return grid_configs
 
-
 if __name__ == "__main__":
-    # This block will be executed only if the script is run directly, not when imported as a module
-
     # Example usage:
     N = 10
     p = 0.3
@@ -82,3 +84,4 @@ if __name__ == "__main__":
 
     simulation = FireSimulation(N, p)
     simulation.simulate_fire_spread(steps)
+
