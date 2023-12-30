@@ -61,14 +61,14 @@ class FireSimulation:
         Args:
         - steps (int): The number of time steps to simulate.
         """
-        self.begin_fire()
         grid_configs = [np.copy(self.grid)] 
+        self.begin_fire()
         for _ in range(steps):
             self.spread_fire()
             self.grid_this_time = np.copy(self.grid)
+            grid_configs.append(np.copy(self.grid))
             self.grid[self.grid == 2] = 3
             self.spread_fire_next_time()
-            grid_configs.append(np.copy(self.grid))
         return grid_configs
 
 
