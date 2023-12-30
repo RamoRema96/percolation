@@ -76,6 +76,7 @@ class FireSimulation:
             self.spread_fire_next_time()
             # Check if there are no more burning states or at least one burning state in the last row
             if not any(CellState.BURNING.value in row for row in self.grid[:-1]) or CellState.BURNING.value in self.grid[-1]:
+                self.t=_
                 break
         return grid_configs
 
