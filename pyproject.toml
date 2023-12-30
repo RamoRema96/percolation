@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "percolation"
+version = "0.1.0"
+description = ""
+authors = ["Omar Amer"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+tk = "^0.1.0"
+numpy = "^1.26.2"
+matplotlib = "^3.8.2"
+ipykernel = "^6.28.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
