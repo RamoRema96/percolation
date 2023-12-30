@@ -2,6 +2,8 @@
 
 Simulate and visualize the spread of fire in a grid over multiple time steps.
 
+
+![Alt text](animation_50_0.6_8.gif)
 ## Table of Contents
 
 - [Introduction](#introduction)
