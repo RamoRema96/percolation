@@ -3,8 +3,9 @@ import tkinter as tk
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.colors import LinearSegmentedColormap
+from matplotlib.animation import FuncAnimation
 
-def visualize_fire_sequence(matrix_list):
+def visualize_fire_sequence(matrix_list, save_path=None):
     """
     Visualize a sequence of matrices as an animation using Tkinter and Matplotlib.
 
@@ -52,8 +53,10 @@ def visualize_fire_sequence(matrix_list):
         update_visualization(frame)
         frame = (frame + 1) % len(matrix_list)
         root.after(1000, animate, frame)
-
-    animate(0)
+    
+    animation = FuncAnimation(fig, animate, frames=len(matrix_list), interval=1000)
+    if save_path:
+        animation.save(save_path, writer='pillow', fps=1)  # Save as GIF
     root.mainloop()
 
 
